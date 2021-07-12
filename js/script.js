@@ -155,14 +155,16 @@ function nameValidation(e){
     emailValidation(e);
  })
  function emailValidation(e){
-
     const hint = inputEmail.parentElement.lastElementChild;
     let emailValue = inputEmail.value;
     const emailRegex = /\w+@[a-z]+(.com)+/ig;
     const valid = emailRegex.test(emailValue);
 
     if(!emailValue){
+        hint.style.display= "block";
+        inputEmail.parentNode.classList.add('not-valid');
         hint.innerHTML = "Email cannot be empty";
+        e.preventDefault()
     }else{
         if(valid){
             inputEmail.parentNode.classList.remove('not-valid');
@@ -170,6 +172,7 @@ function nameValidation(e){
             hint.style.display= "none";
         }else{
             inputEmail.parentNode.classList.remove('valid');
+            hint.innerHTML = "Email must be formatted correctly";
             inputEmail.parentNode.classList.add('not-valid');
             hint.style.display= "block";
             e.preventDefault()
@@ -217,7 +220,7 @@ function paymentValidation(e){
      const zipHint = userZip.parentElement.lastElementChild;
      const cvvHint = cvv.parentElement.lastElementChild;
     if(paymentSelect.value =="credit-card"){
-             console.log('heloo');
+    
     let cardValue = cardNumber.value;
     const creditCardRegex = /^[0-9]{13,16}$/;
     const validCard = creditCardRegex.test(cardValue);
@@ -280,10 +283,11 @@ function paymentValidation(e){
 /**----------------------------- */
 /**CALLS HTE FUNCTIONS BELOW */
 form.addEventListener('submit', (e)=>{
-    if(activitiesValidation(e) || paymentValidation(e) || nameValidation(e)){
+    if(activitiesValidation(e) || paymentValidation(e) || nameValidation(e) || emailValidation(e)){
         activitiesValidation(e);
         paymentValidation(e);
         nameValidation(e);  
+        emailValidation(e);
     }else{
         e.preventDefault()
     }
