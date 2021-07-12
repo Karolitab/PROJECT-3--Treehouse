@@ -1,6 +1,6 @@
 # PROJECT-3
  My third project of my tech-degree javascript course. Data validation
-This code crates a form that validates the user input according to regex and some specifications.
+This code creates a form that validates the user input according to regex and some specifications.
 EXTRA CREDIT{
 Created a real time error message in the name field and email field with the keyup addevent listener
 Created an different error message for the email field. If the email is formatted incorrectly, the error would say:
