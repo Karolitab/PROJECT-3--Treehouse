@@ -27,21 +27,21 @@ const shirtDesign = document.querySelector('#design');
 const shirtColor = document.querySelector('#color');
 const colorOptions = shirtColor.children;
 shirtColor.disabled = true;
-shirtDesign.addEventListener('change', (e) => {
-    shirtColor.disabled = false;
-    for(i=0;i<colorOptions.length;i++){
-        let selectedOption = colorOptions[i];
-        let clicked= e.target.value;
-        let attribute = selectedOption.getAttribute('data-theme');
-        if(clicked===attribute){
-            selectedOption.hidden = false;
-            selectedOption.select = true ;
-        } else if (clicked !== attribute){
-            selectedOption.hidden= true;
-            selectedOption.select= false;
+shirtDesign.addEventListener('change', (e) =>{
+    shirtColor.disabled = false
+    let designSelection = e.target.value
+    for(let i=0; i<colorOptions.length; i++){
+       let colorSelection = colorOptions[i].getAttribute("data-theme")
+        if(designSelection == colorSelection){
+            colorOptions[i].hidden = false;
+            colorOptions[i].setAttribute('selected', true)
+        }else{
+            colorOptions[i].hidden = true;
+            colorOptions[i].removeAttribute('selected', false)
         }
     }
 })
+
 
 /**----------------------------- */
 /**PRICE OF THE ACTIVITIES FIELD
@@ -81,18 +81,19 @@ paypal.style.display= 'none';
 bitcoin.style.display= 'none';
 paymentSelect.children[1].setAttribute("selected", true);
 
-paymentSelect.addEventListener('change', (e)=>{
-    let clicked= e.target.value;
-    if(clicked==="credit-card"){
+paymentSelect.addEventListener('change', ()=>{
+    if(paymentSelect.value ==="credit-card"){
         creditCardBox.style.display= 'flex';
         expirationBox.style.display= 'flex';
+        paypal.style.display= 'none';
+        bitcoin.style.display= 'none';
     }
-    if(clicked==="paypal"){
+    if(paymentSelect.value ==="paypal"){
         paypal.style.display= 'block';
         bitcoin.style.display= 'none';
         creditCardBox.style.display= 'none';
         expirationBox.style.display= 'none';
-    }else if(clicked==='bitcoin'){
+    }else if(paymentSelect.value ==='bitcoin'){
         bitcoin.style.display= 'block';
         paypal.style.display= 'none';
         creditCardBox.style.display= 'none';
@@ -116,7 +117,11 @@ const form = document.querySelector('form');
  * If the name input value is not empty, the valid style will be added to the input box 
  * If the name input value is empty, the not-valid style will be added and a hint will be displayed telling the user what to do
  */
-inputName.addEventListener('keyup', (e)=>{
+ inputName.addEventListener('keyup', (e)=>{
+    nameValidation(e);
+ })
+function nameValidation(e){
+    
     const hint =inputName.parentElement.lastElementChild;
     
     let nameValue = inputName.value;
@@ -137,7 +142,8 @@ inputName.addEventListener('keyup', (e)=>{
     if(nameTest===false){
         e.preventDefault()
     }
-    })
+    
+}
 /**----------------------------- */
 /**EMAIL INPUT
  * An event listener is added to the Input Email Box. REAL TIME ERROR MESSAGE
@@ -145,7 +151,11 @@ inputName.addEventListener('keyup', (e)=>{
  * If the email value is equal to the email regex, the valid style will be added to the input box 
  * If the email value is not equal to the email regex, the not-valid style will be added to the input box  and a different hint will be displayed
  */
-inputEmail.addEventListener('keyup', (e)=>{
+ inputEmail.addEventListener('keyup', (e)=>{
+    emailValidation(e);
+ })
+ function emailValidation(e){
+
     const hint = inputEmail.parentElement.lastElementChild;
     let emailValue = inputEmail.value;
     const emailRegex = /\w+@[a-z]+(.com)+/ig;
@@ -165,9 +175,8 @@ inputEmail.addEventListener('keyup', (e)=>{
             e.preventDefault()
          }
     }
-    
-});
-/**----------------------------- */
+}
+
 /**ACTIVITIES BOX
 /**Creates a function that if at least one activity box is checked, the valid style is added to the legend of the field
  * If any activity box is checked, the not-valid style will be added instead and a hint will appear
@@ -202,9 +211,14 @@ function activitiesValidation(e){
 function paymentValidation(e){
     /**Validates the card input with the regex and adds the valid/not-valid class depending if the input is false or true
      * Displays the hint depending if its true or false
-     */
+     * 
+     */ 
+     const hint = cardNumber.parentElement.lastElementChild;
+     const zipHint = userZip.parentElement.lastElementChild;
+     const cvvHint = cvv.parentElement.lastElementChild;
+    if(paymentSelect.value =="credit-card"){
+             console.log('heloo');
     let cardValue = cardNumber.value;
-    const hint = cardNumber.parentElement.lastElementChild;
     const creditCardRegex = /^[0-9]{13,16}$/;
     const validCard = creditCardRegex.test(cardValue);
     if(validCard===true){
@@ -223,7 +237,6 @@ function paymentValidation(e){
      * Displays the hint depending if its true or false
      */
     let zipValue = userZip.value;
-    const zipHint = userZip.parentElement.lastElementChild;
     const zipRegex = /^[0-9]{5}$/
     const validZip = zipRegex.test(zipValue);
     if(validZip===true){
@@ -236,13 +249,12 @@ function paymentValidation(e){
         userZip.parentNode.classList.add('not-valid');
         zipHint.style.display= "block";
         e.preventDefault()
-    }
+    } 
     /**----------------------------- */
     /**Validates the cvv input with the regex and adds the valid/not-valid class depending if the input is false or true
      * Displays the hint depending if its true or false
      */
     let cvvValue = cvv.value;
-    const cvvHint = cvv.parentElement.lastElementChild;
     const cvvRegex = /^[0-9]{3}$/;
     const validCvv = cvvRegex.test(cvvValue);
     if(validCvv===true){
@@ -255,13 +267,26 @@ function paymentValidation(e){
         cvv.parentNode.classList.add('not-valid')
         cvvHint.style.display= "block";
         e.preventDefault()
-    }
+            }
+        }else{
+            userZip.parentNode.classList.remove('not-valid');
+            zipHint.style.display= "none";
+            cvv.parentNode.classList.remove('not-valid');
+            cvvHint.style.display= "none";
+            cardNumber.parentNode.classList.remove('not-valid');
+            hint.style.display= "none";
+        }
 }
 /**----------------------------- */
 /**CALLS HTE FUNCTIONS BELOW */
 form.addEventListener('submit', (e)=>{
-    activitiesValidation(e);
-    paymentValidation(e);
+    if(activitiesValidation(e) || paymentValidation(e) || nameValidation(e)){
+        activitiesValidation(e);
+        paymentValidation(e);
+        nameValidation(e);  
+    }else{
+        e.preventDefault()
+    }
  })
  /**----------------------------- */
 /**ACCESIBILITY */
